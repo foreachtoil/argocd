@@ -1,0 +1,35 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ingress-nginx
+  namespace: argocd
+spec:
+  generators:
+  - clusters: {}
+  template:
+    metadata:
+      name: '{{name}}-nginx-ingress'
+    spec:
+      destination:
+        server: '{{server}}'
+        namespace: ingress-nginx
+      project: default
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: true
+        syncOptions:
+          - CreateNamespace=true
+      sources:
+        - repoURL: https://kubernetes.github.io/ingress-nginx
+          chart: ingress-nginx
+          targetRevision: "4.8.2"
+          helm:
+            releaseName: ingress-nginx
+            valueFiles:
+              - $argocd/values/ingress-nginx.yaml
+        - repoURL: https://github.com/foreachtoil/argocd.git
+          targetRevision: main
+          ref: argocd

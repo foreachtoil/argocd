@@ -1,0 +1,28 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-rollouts-ui
+  namespace: argocd
+spec:
+  generators:
+  - clusters: {}
+  template:
+    metadata:
+      name: '{{name}}-argo-rollouts-ui'
+    spec:
+      destination:
+        server: '{{server}}'
+        namespace: argocd
+      project: default
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: true
+        syncOptions:
+          - CreateNamespace=true
+      sources:
+        - repoURL: https://github.com/argoproj-labs/rollout-extension
+          targetRevision: master
+          path: manifests

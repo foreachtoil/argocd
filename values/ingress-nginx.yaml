@@ -1,0 +1,14 @@
+controller:
+  resources:
+    limits:
+      cpu: 1500m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 500Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+  config:
+    proxy-read-timeout: "12600"
+    proxy-send-timeout: "12600"
