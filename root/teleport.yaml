@@ -1,0 +1,35 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: teleport
+  namespace: argocd
+spec:
+  generators:
+  - clusters: {}
+  template:
+    metadata:
+      name: '{{name}}-teleport'
+    spec:
+      destination:
+        server: '{{server}}'
+        namespace: teleport
+      project: default
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: true
+        syncOptions:
+          - CreateNamespace=true
+      sources:
+        - repoURL: https://charts.releases.teleport.dev
+          chart: teleport-cluster
+          targetRevision: "14.2.1"
+          helm:
+            releaseName: teleport
+            valueFiles:
+              - $argocd/values/teleport.yaml
+        - repoURL: https://github.com/foreachtoil/argocd.git
+          targetRevision: main
+          ref: argocd

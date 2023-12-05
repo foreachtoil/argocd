@@ -1,0 +1,51 @@
+clusterName: "teleport.foreachtoil.com"
+kubeClusterName: "cicd"
+
+proxy:
+  teleportConfig: {}
+
+authentication:
+  type: github
+  connectorName: "github"
+  localAuth: true
+
+proxyListenerMode: "multiplex"
+
+sessionRecording: "proxy"
+
+acme: true
+# acmeEmail is the email address to provide during certificate registration (this is a Let's Encrypt requirement)
+acmeEmail: "admin@foreachtoil.com"
+
+operator:
+  enabled: true
+
+chartMode: aws
+
+aws:
+  region: "us-east-1"
+  backendTable: "teleport-main"
+  auditLogTable: "teleport-audit-log"
+  sessionRecordingBucket: "foreachtoil-teleport-recording"
+
+highAvailability:
+  replicaCount: 1
+  certManager:
+    enabled: false
+    addCommonName: true
+    addPublicAddrs: false
+    issuerName: "letsencrypt-prod"
+    issuerKind: ClusterIssuer
+    issuerGroup: cert-manager.io
+  minReadySeconds: 15
+
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  suppressAutomaticWildcards: false
+  spec:
+    ingressClassName: nginx
+
